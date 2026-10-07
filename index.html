@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Confirmação de consumo</title>
+  <meta property="og:title" content="Confirmação de consumo">
+  <meta property="og:description" content="Toque para confirmar o consumo da sua conta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#FBF6EE; --card:#FFFFFF; --ink:#2C2018; --muted:#8A7A6B;
+      --line:#EBE1D3; --brand:#B4552D; --brand-ink:#8F3F1F;
+      --pos:#2F7A4F; --neg:#C0392B; --field:#FCFAF6;
+      --shadow:0 1px 2px rgba(44,32,24,.05),0 8px 24px rgba(44,32,24,.06);
+      --r:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.45; -webkit-font-smoothing:antialiased}
+    .wrap{max-width:560px; margin:0 auto; padding:20px 16px 64px}
+    header{padding:8px 2px 18px}
+    .brand{font-family:'Fraunces',serif; font-weight:600; font-size:24px; letter-spacing:-.01em}
+    .brand small{display:block; font-family:'Inter'; font-weight:500; font-size:13px; color:var(--muted); margin-top:2px}
+    .card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:18px; margin-bottom:16px}
+    .card h2{font-family:'Fraunces',serif; font-weight:600; font-size:18px; margin:0 0 10px}
+    .line{display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px dashed var(--line); font-size:15px}
+    .line:last-child{border-bottom:none}
+    .k{color:var(--muted)} .v{font-weight:600; text-align:right; font-variant-numeric:tabular-nums}
+    .item{padding:8px 0; border-bottom:1px dashed var(--line); font-size:14px}
+    .item:last-child{border-bottom:none}
+    .item .d{font-weight:500}
+    .item .n{display:flex; justify-content:space-between; color:var(--muted); font-variant-numeric:tabular-nums; margin-top:2px}
+    .item .n b{color:var(--ink)}
+    .total{background:#2C2018; color:#fff; border-radius:12px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; margin-top:10px}
+    .total .lab{font-size:13px; opacity:.75}
+    .total .num{font-family:'Fraunces',serif; font-size:22px; font-weight:600; font-variant-numeric:tabular-nums}
+    .foto img{width:100%; border-radius:10px; border:1px solid var(--line); display:block}
+    .foto a{display:inline-block; margin-top:8px; font-size:13px; color:var(--brand-ink)}
+    .btn{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; font-size:16px; font-weight:600; font-family:inherit; border-radius:12px; cursor:pointer; border:1px solid transparent; margin-bottom:10px}
+    .btn-ok{background:var(--pos); color:#fff}
+    .btn-no{background:#fff; color:var(--neg); border-color:rgba(192,57,43,.35)}
+    .btn-primary{background:var(--brand); color:#fff}
+    .btn-ghost{background:transparent; color:var(--muted); border-color:var(--line)}
+    .btn:disabled{opacity:.6}
+    textarea{width:100%; min-height:90px; padding:12px; font-size:16px; font-family:inherit; color:var(--ink); background:var(--field); border:1px solid var(--line); border-radius:10px; outline:none; margin-bottom:10px}
+    textarea:focus{border-color:var(--brand)}
+    label{display:block; font-size:13px; font-weight:500; color:var(--muted); margin-bottom:6px}
+    .hidden{display:none}
+    .msg{padding:14px 16px; border-radius:12px; font-size:15px; margin-bottom:16px}
+    .msg-ok{background:rgba(47,122,79,.10); color:var(--pos); border:1px solid rgba(47,122,79,.25)}
+    .msg-err{background:rgba(192,57,43,.08); color:var(--neg); border:1px solid rgba(192,57,43,.25)}
+    .msg-info{background:#F4EFE7; color:var(--ink); border:1px solid var(--line)}
+    .spin{width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:sp .7s linear infinite}
+    @keyframes sp{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Confirmação de consumo<small id="sub"></small></div>
+  </header>
+  <div id="alert"></div>
+  <div id="rapido" class="card hidden" style="text-align:center; padding:32px 18px">
+    <div id="rapidoIcone" style="font-size:44px; line-height:1"><span class="spin" style="width:36px;height:36px;border-width:3px;border-color:rgba(47,122,79,.25);border-top-color:var(--pos)"></span></div>
+    <h2 id="rapidoTitulo" style="margin:14px 0 6px">Confirmando consumo…</h2>
+    <div id="rapidoTexto" style="color:var(--muted); font-size:15px"></div>
+    <a id="rapidoFoto" class="hidden" style="display:inline-block; margin-top:16px; font-size:14px; color:var(--brand-ink)">Ver os itens e a foto do recibo</a>
+  </div>
+  <div id="conteudo" class="hidden">
+    <div class="card">
+      <h2>Resumo da conta</h2>
+      <div class="line"><span class="k">Cliente</span><span class="v" id="cCliente"></span></div>
+      <div class="line"><span class="k">Data do consumo</span><span class="v" id="cData"></span></div>
+    </div>
+    <div class="card">
+      <h2>Itens</h2>
+      <div id="cItens"></div>
+      <div class="line" style="margin-top:6px"><span class="k">Subtotal</span><span class="v" id="cSub"></span></div>
+      <div class="line hidden" id="cTaxaLinha"><span class="k">Taxa de serviço</span><span class="v" id="cTaxa"></span></div>
+      <div class="line"><span class="k">Desconto</span><span class="v" id="cDesc"></span></div>
+      <div class="total"><div class="lab">Valor final</div><div class="num" id="cFinal"></div></div>
+    </div>
+    <div class="card foto hidden" id="cFotoCard">
+      <h2>Foto da conta assinada</h2>
+      <img id="cFoto" alt="Foto da conta">
+      <a id="cFotoLink" target="_blank" rel="noopener">Abrir a foto em tamanho original</a>
+    </div>
+
+    <div id="acoes">
+      <button class="btn btn-ok" id="btnOk" onclick="responder('confirmar')">✔ Confirmo o consumo</button>
+      <button class="btn btn-no" id="btnNo" onclick="abrirContestar()">Algo não confere</button>
+      <div id="contestarBox" class="card hidden">
+        <label for="coment">O que não confere nesta conta?</label>
+        <textarea id="coment" placeholder="Ex.: não consumi o item X; a quantidade de Y está errada…"></textarea>
+        <button class="btn btn-primary" id="btnEnviarContestacao" onclick="responder('contestar')">Enviar contestação</button>
+        <button class="btn btn-ghost" onclick="fecharContestar()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // ============================================================
+  // Endereço do seu app do Apps Script (termina em /exec).
+  // Se um dia você criar uma NOVA implantação, troque aqui.
+  var API = 'https://script.google.com/macros/s/AKfycbwMIeWHJLK3w53HI9ymJKZRQW30J8AXU2Gd9YstnitG1qe0zmkWC6WiyO2Nku_7LfgIAQ/exec';
+  // ============================================================
+
+  var Q = new URLSearchParams(location.search);
+  var P = { e: Q.get('e') || '', id: Q.get('id') || '', t: Q.get('t') || '', a: Q.get('a') === 'ok' ? 'ok' : '',
+            base: location.origin + location.pathname };
+  var DADOS = null;
+
+  // Conversa com o Apps Script por JSON, sem usar o login Google de quem abre a página.
+  function chamar(acao, extra, ok, falha){
+    var u = API + '?modo=api&acao=' + acao + '&e=' + encodeURIComponent(P.e) + '&id=' + encodeURIComponent(P.id) +
+            '&t=' + encodeURIComponent(P.t) + (extra || '');
+    fetch(u, { redirect:'follow', credentials:'omit', cache:'no-store' })
+      .then(function(r){ if(!r.ok) throw new Error('http'); return r.json(); })
+      .then(function(d){ if(d && d.erro) falha({ message:d.erro }); else ok(d); })
+      .catch(function(){ falha({ message:'Sem conexão com o servidor. Confira a internet e toque no link de novo.' }); });
+  }
+  // Mesmo formato de chamada usado na página original
+  var google = { script: { get run(){
+    var s, f, o = {
+      withSuccessHandler: function(c){ s = c; return o; },
+      withFailureHandler: function(c){ f = c; return o; },
+      responderConfirmacao: function(e, id, t, tipo, coment){ chamar('responder', '&r=' + encodeURIComponent(tipo) + '&c=' + encodeURIComponent(coment || ''), s, f); },
+      confirmarPeloLink: function(){ chamar('confirmar', '', s, f); }
+    };
+    return o;
+  } } };
+
+  function brl(n){ return 'R$ ' + (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function qtd(n){ return String(Math.round((n||0)*1000)/1000).replace('.',','); }
+  function msg(texto, tipo){
+    var a = document.getElementById('alert'); a.innerHTML = '';
+    if(!texto) return;
+    var d = document.createElement('div'); d.className = 'msg msg-' + tipo; d.textContent = texto; a.appendChild(d);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function render(d){
+    if(d.erro){ msg(d.erro === 'Link inválido.' || d.erro === 'Conta não encontrada.' ? 'Este link de confirmação não é válido. Peça um novo link a quem enviou.' : d.erro, 'err'); return; }
+    document.getElementById('sub').textContent = d.empresa;
+    document.getElementById('cCliente').textContent = d.cliente;
+    document.getElementById('cData').textContent = d.data;
+    var box = document.getElementById('cItens'); box.innerHTML = '';
+    (d.itens||[]).forEach(function(i){
+      var el = document.createElement('div'); el.className = 'item';
+      var ds = document.createElement('div'); ds.className = 'd'; ds.textContent = i.descricao;
+      var n = document.createElement('div'); n.className = 'n';
+      var l = document.createElement('span'); l.textContent = qtd(i.quantidade) + ' × ' + brl(i.valorUnitario);
+      var r = document.createElement('b'); r.textContent = brl(i.valorTotal);
+      n.appendChild(l); n.appendChild(r); el.appendChild(ds); el.appendChild(n); box.appendChild(el);
+    });
+    document.getElementById('cSub').textContent = brl(d.subtotal);
+    if(d.taxaServico){ document.getElementById('cTaxa').textContent = brl(d.taxaServico); document.getElementById('cTaxaLinha').classList.remove('hidden'); }
+    document.getElementById('cDesc').textContent = d.desconto ? '- ' + brl(d.desconto) : brl(0);
+    document.getElementById('cFinal').textContent = brl(d.valorFinal);
+    if(d.fotoId){
+      var img = document.getElementById('cFoto'), fid = encodeURIComponent(d.fotoId);
+      img.onerror = function(){ img.onerror = null; img.src = 'https://drive.google.com/thumbnail?id=' + fid + '&sz=w1200'; };
+      img.src = 'https://lh3.googleusercontent.com/d/' + fid + '=w1200';
+      document.getElementById('cFotoLink').href = d.fotoUrl;
+      document.getElementById('cFotoCard').classList.remove('hidden');
+    }
+    document.getElementById('conteudo').classList.remove('hidden');
+
+    var respondida = d.status && d.status !== 'Aguardando confirmação';
+    document.getElementById('acoes').classList.toggle('hidden', !!respondida);
+    if(d.status === 'Confirmado') msg('Consumo confirmado' + (d.respondidoEm ? ' em ' + d.respondidoEm : '') + '. Obrigado!', 'ok');
+    else if(d.status === 'Contestado') msg('Contestação registrada' + (d.respondidoEm ? ' em ' + d.respondidoEm : '') + ': "' + d.comentario + '". Entraremos em contato.', 'info');
+  }
+
+  function abrirContestar(){ document.getElementById('contestarBox').classList.remove('hidden'); document.getElementById('coment').focus(); }
+  function fecharContestar(){ document.getElementById('contestarBox').classList.add('hidden'); }
+
+  function responder(tipo){
+    var coment = document.getElementById('coment').value.trim();
+    if(tipo === 'contestar' && !coment){ msg('Conte o que não confere nesta conta.', 'err'); return; }
+    var btn = document.getElementById(tipo === 'confirmar' ? 'btnOk' : 'btnEnviarContestacao');
+    var txt = btn.innerHTML;
+    document.querySelectorAll('#acoes .btn').forEach(function(b){ b.disabled = true; });
+    btn.innerHTML = '<span class="spin"></span> Enviando…';
+    google.script.run
+      .withSuccessHandler(function(d){ DADOS = d; render(d); })
+      .withFailureHandler(function(e){
+        document.querySelectorAll('#acoes .btn').forEach(function(b){ b.disabled = false; });
+        btn.innerHTML = txt;
+        msg((e && e.message) || 'Não foi possível registrar. Tente de novo.', 'err');
+      })
+      .responderConfirmacao(P.e, P.id, P.t, tipo, coment);
+  }
+
+  if(!P.e || !P.id || !P.t) render({ erro:'Link inválido.' });
+  else if(P.a === 'ok') confirmarRapido();
+  else {
+    msg('Carregando a conta…', 'info');
+    chamar('ver', '', function(d){ msg(''); DADOS = d; render(d); }, function(e){ render({ erro:e.message }); });
+  }
+
+  function confirmarRapido(){
+    document.getElementById('rapido').classList.remove('hidden');
+    google.script.run
+      .withSuccessHandler(function(d){
+        DADOS = d;
+        var titulo = document.getElementById('rapidoTitulo'), texto = document.getElementById('rapidoTexto'), icone = document.getElementById('rapidoIcone');
+        document.getElementById('sub').textContent = d.empresa;
+        if(d.status === 'Contestado'){
+          icone.textContent = '⚠️';
+          titulo.textContent = 'Esta conta foi contestada';
+          texto.textContent = (d.respondidoEm ? 'Em ' + d.respondidoEm + ': ' : '') + '"' + d.comentario + '". Entraremos em contato.';
+        } else {
+          icone.textContent = '✅';
+          titulo.textContent = 'Consumo confirmado';
+          texto.textContent = d.cliente + ' · ' + d.data + ' · ' + brl(d.valorFinal) + '. Obrigado!';
+        }
+        var a = document.getElementById('rapidoFoto');
+        a.href = P.base + '?e=' + encodeURIComponent(P.e) + '&id=' + encodeURIComponent(P.id) + '&t=' + encodeURIComponent(P.t);
+        a.classList.remove('hidden');
+      })
+      .withFailureHandler(function(e){
+        document.getElementById('rapido').classList.add('hidden');
+        var m = (e && e.message) || '';
+        msg(/Link inválido|não encontrada/.test(m) ? 'Este link de confirmação não é válido. Peça um novo link a quem enviou.' : 'Não foi possível confirmar agora. Toque no link de novo em instantes.', 'err');
+      })
+      .confirmarPeloLink(P.e, P.id, P.t);
+  }
+</script>
+</body>
+</html>
